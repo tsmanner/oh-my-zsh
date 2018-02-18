@@ -98,6 +98,12 @@
 __git_printf_supports_v=
 printf -v __git_printf_supports_v -- '%s' yes >/dev/null 2>&1
 
+# Gets the name of the current hash if it has one.  If not, yields the shrot hash.
+__git_hash_name ()
+{
+  git symbolic-ref -q --short HEAD || git describe --tags --exact-match 2> /dev/null || git rev-parse --short HEAD
+}
+
 # stores the divergence from upstream in $p
 # used by GIT_PS1_SHOWUPSTREAM
 __git_ps1_show_upstream ()
@@ -361,7 +367,7 @@ __git_ps1 ()
 	local repo_info rev_parse_exit_code
 	repo_info="$(git rev-parse --git-dir --is-inside-git-dir \
 		--is-bare-repository --is-inside-work-tree \
-		--short HEAD 2>/dev/null)"
+	  --short HEAD 2>/dev/null)"
 	rev_parse_exit_code="$?"
 
 	if [ -z "$repo_info" ]; then
